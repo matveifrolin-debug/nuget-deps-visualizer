@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Ошибки: неверное значение у каждого параметра -->
+<config>
+    <package>bad name!</package>
+    <repository>ftp://example.com</repository>
+    <test_mode>yes</test_mode>
+    <output>graph.png</output>
+    <ascii_tree>maybe</ascii_tree>
+    <filter>a b</filter>
+</config>

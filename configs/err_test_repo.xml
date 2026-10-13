@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Ошибка: в тестовом режиме файл репозитория не существует -->
+<config>
+    <package>A</package>
+    <repository>repos/no_such_repo.txt</repository>
+    <test_mode>true</test_mode>
+    <output>graph.svg</output>
+    <ascii_tree>true</ascii_tree>
+    <filter></filter>
+</config>

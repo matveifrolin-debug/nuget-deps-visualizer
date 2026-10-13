@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Ошибки: не хватает параметров, есть неизвестный и повторный -->
+<config>
+    <package>Serilog</package>
+    <package>NLog</package>
+    <color>red</color>
+</config>

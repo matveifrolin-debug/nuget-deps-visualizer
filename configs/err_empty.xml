@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Ошибки: обязательные параметры пустые -->
+<config>
+    <package></package>
+    <repository></repository>
+    <test_mode>false</test_mode>
+    <output></output>
+    <ascii_tree>false</ascii_tree>
+</config>
