@@ -1,15 +1,12 @@
 """Тесты этапа 2: получение прямых зависимостей."""
 
 import os
-import sys
 import tempfile
 import unittest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
-
-from repository import (FileRepository, NotFoundError,  # noqa: E402
-                        NugetRepository, RepositoryError, choose_version,
-                        parse_nuspec)
+import context
+from repository import (FileRepository, NotFoundError, NugetRepository,
+                        RepositoryError, choose_version, parse_nuspec)
 
 BASE = "https://api.nuget.org/v3-flatcontainer/"
 NUSPEC = """<?xml version="1.0" encoding="utf-8"?>
@@ -71,31 +68,32 @@ class NuspecTest(unittest.TestCase):
             choose_version([])
 
 
+def make_repo():
+    """Создать репозиторий NuGet с двумя подменёнными страницами."""
+    pages = {
+        BASE + "serilog/index.json": '{"versions": ["3.1.1", "4.0.0"]}',
+        BASE + "serilog/4.0.0/serilog.nuspec": NUSPEC,
+    }
+    return NugetRepository(BASE, fetch=fake_fetch(pages))
+
+
 class NugetRepositoryTest(unittest.TestCase):
     """Работа с репозиторием NuGet через подменённую загрузку."""
 
-    def setUp(self):
-        """Подготовить репозиторий с двумя страницами."""
-        pages = {
-            BASE + "serilog/index.json": '{"versions": ["3.1.1", "4.0.0"]}',
-            BASE + "serilog/4.0.0/serilog.nuspec": NUSPEC,
-        }
-        self.repo = NugetRepository(BASE, fetch=fake_fetch(pages))
-
     def test_direct_dependencies(self):
         """Версия и прямые зависимости пакета."""
-        version, deps = self.repo.direct_dependencies("Serilog")
+        version, deps = make_repo().direct_dependencies("Serilog")
         self.assertEqual(version, "4.0.0")
         self.assertEqual(deps[1], ("System.Threading.Channels", "8.0.0"))
 
     def test_names_only(self):
         """get_dependencies возвращает только имена."""
-        self.assertEqual(len(self.repo.get_dependencies("Serilog")), 2)
+        self.assertEqual(len(make_repo().get_dependencies("Serilog")), 2)
 
     def test_not_found(self):
         """Неизвестный пакет - ошибка."""
         with self.assertRaises(RepositoryError):
-            self.repo.get_dependencies("NoSuchPackage")
+            make_repo().get_dependencies("NoSuchPackage")
 
     def test_bad_json(self):
         """Некорректный ответ сервера."""
@@ -135,8 +133,7 @@ class FileRepositoryTest(unittest.TestCase):
 
     def test_simple(self):
         """Файл repos/simple.txt."""
-        path = os.path.join(os.path.dirname(__file__), "..",
-                            "repos", "simple.txt")
+        path = os.path.join(context.ROOT, "repos", "simple.txt")
         repo = FileRepository(path)
         self.assertEqual(repo.get_dependencies("A"), ["B", "C"])
         self.assertEqual(repo.get_dependencies("D"), [])

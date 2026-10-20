@@ -13,7 +13,7 @@
 
 import os
 import re
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree
 from dataclasses import dataclass
 from urllib.parse import urlparse
 
@@ -67,8 +67,8 @@ def read_root(path):
     if not os.path.isfile(path):
         raise ConfigError([f"config file not found: '{path}'"])
     try:
-        root = ET.parse(path).getroot()
-    except ET.ParseError as error:
+        root = xml.etree.ElementTree.parse(path).getroot()
+    except xml.etree.ElementTree.ParseError as error:
         raise ConfigError([f"invalid XML in '{path}': {error}"]) from error
     if root.tag != ROOT_TAG:
         raise ConfigError(

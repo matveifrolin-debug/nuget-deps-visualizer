@@ -9,7 +9,7 @@ import json
 import re
 import urllib.error
 import urllib.request
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree
 
 TIMEOUT_SECONDS = 15
 HTTP_NOT_FOUND = 404
@@ -64,8 +64,8 @@ def parse_nuspec(text):
     повторов: список пар (имя, версия).
     """
     try:
-        root = ET.fromstring(text)
-    except ET.ParseError as error:
+        root = xml.etree.ElementTree.fromstring(text)
+    except xml.etree.ElementTree.ParseError as error:
         raise RepositoryError(f"invalid .nuspec XML: {error}") from error
     result, seen = [], set()
     for element in root.iter():

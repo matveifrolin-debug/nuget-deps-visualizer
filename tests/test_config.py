@@ -1,15 +1,11 @@
 """Тесты этапа 1: загрузка и проверка XML-конфигурации."""
 
 import os
-import sys
 import tempfile
 import unittest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
-
-from config import ConfigError, load_config  # noqa: E402
-
-ROOT = os.path.join(os.path.dirname(__file__), "..")
+import context
+from config import ConfigError, load_config
 VALID = {
     "package": "Serilog",
     "repository": "https://api.nuget.org/v3-flatcontainer/",
@@ -73,7 +69,7 @@ class ValidConfigTest(ConfigTestCase):
     def test_example_files(self):
         """Примеры configs/config.xml и configs/test_mode.xml корректны."""
         old = os.getcwd()
-        os.chdir(ROOT)
+        os.chdir(context.ROOT)
         try:
             self.assertTrue(load_config("configs/test_mode.xml").test_mode)
             self.assertFalse(load_config("configs/config.xml").test_mode)
