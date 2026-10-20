@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Этап 2: прямые зависимости пакета Serilog из NuGet -->
+<config>
+    <package>Serilog</package>
+    <repository>https://api.nuget.org/v3-flatcontainer/</repository>
+    <test_mode>false</test_mode>
+    <output>graph.svg</output>
+    <ascii_tree>false</ascii_tree>
+</config>

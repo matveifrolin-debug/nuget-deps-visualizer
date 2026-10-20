@@ -42,3 +42,36 @@ python -m unittest discover -s tests -v
 При ошибках выводится список **всех** найденных проблем, код выхода 1.
 
 Демонстрация: `scripts\demo_stage1.bat` (примеры в папке `configs`).
+
+## Этап 2. Сбор данных
+Прямые зависимости пакета извлекаются из репозитория NuGet (API v3)
+без менеджеров пакетов и сторонних библиотек:
+
+1. `GET {repository}/{id}/index.json` - список версий, выбирается
+   последняя стабильная (без суффикса `-beta`, `-rc` и т.п.);
+2. `GET {repository}/{id}/{version}/{id}.nuspec` - описание пакета (XML);
+3. из `.nuspec` извлекаются все `<dependency id="..." version="...">`;
+   зависимости разных целевых платформ (`<group targetFramework>`)
+   объединяются без повторов.
+
+В `repository` можно указать адрес flat container
+(`https://api.nuget.org/v3-flatcontainer/`) или служебный индекс
+`https://api.nuget.org/v3/index.json`: тогда адрес хранилища
+пакетов (`PackageBaseAddress`) берётся из него.
+
+Пример вывода:
+```
+Package: Serilog 4.4.0
+Direct dependencies (3):
+  System.Diagnostics.DiagnosticSource 8.0.1
+  System.Threading.Channels 8.0.0
+  System.ValueTuple 4.5.0
+```
+
+Обрабатываемые ошибки: пакет не найден (HTTP 404), нет связи
+с сервером, некорректный ответ (JSON/XML).
+
+В тестовом режиме (`test_mode=true`) зависимости читаются из файла
+вида `A: B C` (пакеты - заглавные латинские буквы).
+
+Демонстрация: `scripts\demo_stage2.bat`.
