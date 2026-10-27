@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Этап 3: сложный граф, пакеты с F исключены -->
+<config>
+    <package>A</package>
+    <repository>repos/complex.txt</repository>
+    <test_mode>true</test_mode>
+    <output>graph.svg</output>
+    <ascii_tree>false</ascii_tree>
+    <filter>F</filter>
+</config>

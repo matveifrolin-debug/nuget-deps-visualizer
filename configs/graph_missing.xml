@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Этап 3: зависимость Z отсутствует в репозитории -->
+<config>
+    <package>A</package>
+    <repository>repos/missing.txt</repository>
+    <test_mode>true</test_mode>
+    <output>graph.svg</output>
+    <ascii_tree>false</ascii_tree>
+    <filter></filter>
+</config>

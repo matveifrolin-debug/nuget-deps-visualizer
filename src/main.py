@@ -4,6 +4,7 @@ import argparse
 import sys
 
 from config import ConfigError, load_config
+from graph import GraphError, build_graph, find_cycles
 from repository import RepositoryError, open_repository
 
 DEFAULT_CONFIG = "config.xml"
@@ -19,31 +20,43 @@ def parse_args(argv):
     return parser.parse_args(argv)
 
 
-def print_direct_dependencies(config, repo):
-    """Этап 2: вывести прямые зависимости заданного пакета."""
-    version, deps = repo.direct_dependencies(config.package)
-    print(f"Package: {config.package} {version}".rstrip())
-    if not deps:
-        print("No direct dependencies")
-        return
-    print(f"Direct dependencies ({len(deps)}):")
-    for name, dep_version in deps:
-        print(f"  {name} {dep_version}".rstrip())
+def print_graph(config, graph):
+    """Этап 3: вывести граф зависимостей с учётом транзитивности."""
+    print(f"Dependency graph of {config.package} (DFS order):")
+    for name, deps in graph.edges.items():
+        print(f"  {name} -> {', '.join(deps) if deps else '(none)'}")
+    print(f"Packages: {len(graph.edges)}, "
+          f"dependencies: {graph.edge_count()}")
+    cycles = find_cycles(graph)
+    for cycle in cycles:
+        print("Cycle: " + " -> ".join(cycle))
+    if not cycles:
+        print("Cycles: none")
+    if config.filter:
+        excluded = ", ".join(sorted(graph.excluded)) or "(none)"
+        print(f"Excluded by filter '{config.filter}': {excluded}")
+    if graph.missing:
+        print("Not found in repository: " + ", ".join(graph.missing))
 
 
 def main(argv=None):
-    """Загрузить конфигурацию и вывести прямые зависимости пакета."""
+    """Загрузить конфигурацию, построить и вывести граф зависимостей."""
     args = parse_args(argv)
     try:
         config = load_config(args.config)
         repo = open_repository(config)
-        print_direct_dependencies(config, repo)
+        graph = build_graph(config.package, repo.get_dependencies,
+                            config.filter)
+        print_graph(config, graph)
     except ConfigError as error:
         print(f"Configuration error ({args.config}):", file=sys.stderr)
         print(error, file=sys.stderr)
         return 1
     except RepositoryError as error:
         print(f"Repository error: {error}", file=sys.stderr)
+        return 1
+    except GraphError as error:
+        print(f"Graph error: {error}", file=sys.stderr)
         return 1
     return 0
 

@@ -7,11 +7,14 @@ direct_dependencies(name)  - (версия пакета, [(зависимост�
 
 import json
 import re
+import time
 import urllib.error
 import urllib.request
 import xml.etree.ElementTree
 
 TIMEOUT_SECONDS = 15
+RETRY_ATTEMPTS = 3
+RETRY_DELAY_SECONDS = 2
 HTTP_NOT_FOUND = 404
 PRERELEASE_MARK = "-"
 TEST_NAME_RE = re.compile(r"^[A-Z]+$")
@@ -28,8 +31,8 @@ class NotFoundError(RepositoryError):
     """Запрошенный ресурс (пакет) отсутствует в репозитории."""
 
 
-def http_get(url):
-    """Скачать url и вернуть текст ответа. Бросает RepositoryError."""
+def http_get_once(url):
+    """Один раз скачать url и вернуть текст ответа."""
     request = urllib.request.Request(
         url, headers={"User-Agent": "nuget-deps-visualizer"})
     try:
@@ -41,6 +44,23 @@ def http_get(url):
         raise RepositoryError(f"HTTP {error.code} for {url}") from error
     except (urllib.error.URLError, TimeoutError, OSError) as error:
         raise RepositoryError(f"cannot connect to {url}: {error}") from error
+
+
+def http_get(url):
+    """Скачать url, повторяя попытку при сбое сети. Бросает RepositoryError.
+
+    Отсутствие ресурса (HTTP 404) не повторяется: сразу NotFoundError.
+    """
+    for attempt in range(1, RETRY_ATTEMPTS + 1):
+        try:
+            return http_get_once(url)
+        except NotFoundError:
+            raise
+        except RepositoryError:
+            if attempt == RETRY_ATTEMPTS:
+                raise
+            time.sleep(RETRY_DELAY_SECONDS)
+    raise RepositoryError(f"cannot download {url}")
 
 
 def choose_version(versions):
