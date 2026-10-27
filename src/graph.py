@@ -99,3 +99,30 @@ def find_cycles(graph):
             path.append(dep)
             on_path.add(dep)
     return cycles
+
+
+def build_reverse_index(names, get_dependencies):
+    """Построить обратный индекс {пакет: [пакеты, зависящие от него]}.
+
+    names - все пакеты репозитория. Для каждой зависимости X пакета P
+    в индекс записывается обратное ребро X -> P.
+    """
+    index = {name: [] for name in names}
+    for name in names:
+        for dep in get_dependencies(name):
+            dependents = index.setdefault(dep, [])
+            if name not in dependents:
+                dependents.append(name)
+    return index
+
+
+def build_reverse_graph(target, names, get_dependencies, name_filter=""):
+    """Этап 4: построить граф обратных зависимостей пакета target.
+
+    Используется тот же итеративный DFS (build_graph), но обход идёт
+    по обратным рёбрам: от пакета к тем, кто от него зависит.
+    """
+    index = build_reverse_index(names, get_dependencies)
+    if target not in index:
+        raise GraphError(f"package '{target}' not found in repository")
+    return build_graph(target, index.get, name_filter)

@@ -151,6 +151,11 @@ class NugetRepository:
         _, deps = self.direct_dependencies(name)
         return [dep for dep, _ in deps]
 
+    def package_names(self):
+        """Список всех пакетов недоступен: в NuGet их сотни тысяч."""
+        raise RepositoryError("reverse dependencies are supported only "
+                              "in test mode (test_mode=true)")
+
 
 def parse_test_line(line, number):
     """Разобрать строку тестового репозитория 'A: B C'."""
@@ -195,6 +200,10 @@ class FileRepository:
     def direct_dependencies(self, name):
         """Вернуть ('', список пар (зависимость, '')): версий нет."""
         return "", [(dep, "") for dep in self.get_dependencies(name)]
+
+    def package_names(self):
+        """Вернуть список всех пакетов тестового репозитория."""
+        return list(self.graph)
 
 
 def open_repository(config):

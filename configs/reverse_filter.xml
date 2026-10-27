@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Этап 4: то же с фильтром D -->
+<config>
+    <package>H</package>
+    <repository>repos/complex.txt</repository>
+    <test_mode>true</test_mode>
+    <output>graph.svg</output>
+    <ascii_tree>false</ascii_tree>
+    <filter>D</filter>
+</config>
