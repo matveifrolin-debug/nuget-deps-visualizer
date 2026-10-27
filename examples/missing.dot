@@ -1,0 +1,11 @@
+digraph dependencies {
+    rankdir=LR;
+    node [shape=box, style=rounded, fontname=Arial];
+    "A" [style="rounded,filled", fillcolor=lightblue];
+    "B";
+    "C";
+    "Z" [style="rounded,dashed", color=gray];
+    "A" -> "B";
+    "A" -> "Z";
+    "B" -> "C";
+}

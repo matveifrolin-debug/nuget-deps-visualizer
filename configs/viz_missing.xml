@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Этап 5: без ASCII-дерева, Z нет в репозитории -->
+<config>
+    <package>A</package>
+    <repository>repos/missing.txt</repository>
+    <test_mode>true</test_mode>
+    <output>examples/missing.svg</output>
+    <ascii_tree>false</ascii_tree>
+    <filter></filter>
+</config>

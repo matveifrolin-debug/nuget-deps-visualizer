@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Этап 5: тестовый граф с циклом -->
+<config>
+    <package>A</package>
+    <repository>repos/complex.txt</repository>
+    <test_mode>true</test_mode>
+    <output>examples/complex.svg</output>
+    <ascii_tree>true</ascii_tree>
+    <filter></filter>
+</config>

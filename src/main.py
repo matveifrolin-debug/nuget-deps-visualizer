@@ -6,6 +6,7 @@ import sys
 from config import ConfigError, load_config
 from graph import GraphError, build_graph, build_reverse_graph, find_cycles
 from repository import RepositoryError, open_repository
+from visualize import VisualizeError, ascii_tree, save_svg, to_dot
 
 DEFAULT_CONFIG = "config.xml"
 
@@ -58,6 +59,18 @@ def print_reverse(config, graph):
     print_problems(config, graph)
 
 
+def visualize(config, graph):
+    """Этап 5: вывести DOT, сохранить SVG и при необходимости дерево."""
+    dot_text = to_dot(graph)
+    print("Graphviz (DOT):")
+    print(dot_text, end="")
+    dot_path = save_svg(dot_text, config.output)
+    print(f"Saved: {dot_path}, {config.output}")
+    if config.ascii_tree:
+        print("ASCII tree:")
+        print("\n".join(ascii_tree(graph)))
+
+
 def run(config, reverse):
     """Построить и вывести прямой или обратный граф зависимостей."""
     repo = open_repository(config)
@@ -69,6 +82,7 @@ def run(config, reverse):
         graph = build_graph(config.package, repo.get_dependencies,
                             config.filter)
         print_graph(config, graph)
+        visualize(config, graph)
 
 
 def main(argv=None):
@@ -85,6 +99,9 @@ def main(argv=None):
         return 1
     except GraphError as error:
         print(f"Graph error: {error}", file=sys.stderr)
+        return 1
+    except VisualizeError as error:
+        print(f"Visualization error: {error}", file=sys.stderr)
         return 1
     return 0
 

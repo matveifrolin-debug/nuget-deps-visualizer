@@ -1,0 +1,26 @@
+digraph dependencies {
+    rankdir=LR;
+    node [shape=box, style=rounded, fontname=Arial];
+    "Serilog" [style="rounded,filled", fillcolor=lightblue];
+    "System.Diagnostics.DiagnosticSource";
+    "System.Memory";
+    "System.Buffers";
+    "System.Numerics.Vectors";
+    "System.Runtime.CompilerServices.Unsafe";
+    "System.Threading.Channels";
+    "Microsoft.Bcl.AsyncInterfaces";
+    "System.Threading.Tasks.Extensions";
+    "System.ValueTuple";
+    "Serilog" -> "System.Diagnostics.DiagnosticSource";
+    "Serilog" -> "System.Threading.Channels";
+    "Serilog" -> "System.ValueTuple";
+    "System.Diagnostics.DiagnosticSource" -> "System.Memory";
+    "System.Diagnostics.DiagnosticSource" -> "System.Runtime.CompilerServices.Unsafe";
+    "System.Memory" -> "System.Buffers";
+    "System.Memory" -> "System.Numerics.Vectors";
+    "System.Memory" -> "System.Runtime.CompilerServices.Unsafe";
+    "System.Threading.Channels" -> "Microsoft.Bcl.AsyncInterfaces";
+    "System.Threading.Channels" -> "System.Threading.Tasks.Extensions";
+    "Microsoft.Bcl.AsyncInterfaces" -> "System.Threading.Tasks.Extensions";
+    "System.Threading.Tasks.Extensions" -> "System.Runtime.CompilerServices.Unsafe";
+}

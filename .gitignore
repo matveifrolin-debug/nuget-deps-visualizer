@@ -10,3 +10,5 @@ venv/
 *.exe
 build/
 dist/
+/graph.svg
+/graph.dot
