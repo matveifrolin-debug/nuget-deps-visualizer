@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Этап 5: Microsoft.Extensions.Logging из NuGet -->
+<!-- Этап 5: Microsoft.Extensions.Logging из NuGet, без NETStandard.Library -->
 <config>
     <package>Microsoft.Extensions.Logging</package>
     <repository>https://api.nuget.org/v3-flatcontainer/</repository>
     <test_mode>false</test_mode>
     <output>examples/logging.svg</output>
     <ascii_tree>true</ascii_tree>
-    <filter></filter>
+    <filter>NETStandard</filter>
 </config>

@@ -198,6 +198,13 @@ A
 Polly) и двух тестовых графов: `scripts\demo_stage5.bat`.
 Готовые изображения лежат в папке `examples`.
 
+Для Microsoft.Extensions.Logging и Polly задан `filter=NETStandard`.
+Без него граф разрастается до ~90 пакетов и ~470 рёбер и становится
+нечитаемым: старый пакет `System.ComponentModel.Annotations` для
+платформ `netstandard1.x` зависит от `NETStandard.Library`, а тот -
+от сотни мелких пакетов `System.*`. Для `net8.0` NuGet их не
+подключает: они уже входят в .NET.
+
 ### Сравнение со штатными инструментами NuGet
 Штатные средства: вкладка **Dependencies** на nuget.org,
 `dotnet list package --include-transitive` (для проекта),

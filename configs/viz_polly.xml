@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Этап 5: Polly из NuGet -->
+<!-- Этап 5: Polly из NuGet, без NETStandard.Library -->
 <config>
     <package>Polly</package>
     <repository>https://api.nuget.org/v3-flatcontainer/</repository>
     <test_mode>false</test_mode>
     <output>examples/polly.svg</output>
     <ascii_tree>true</ascii_tree>
-    <filter></filter>
+    <filter>NETStandard</filter>
 </config>
